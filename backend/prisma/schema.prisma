@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id        String               @id @default(uuid())
+  code      String               @unique
+  name      String
+  price     Decimal              @db.Decimal(10, 2)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  materials ProductRawMaterial[]
+}
+
+model RawMaterial {
+  id            String               @id @default(uuid())
+  code          String               @unique
+  name          String
+  stockQuantity Int
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  products      ProductRawMaterial[]
+}
+
+model ProductRawMaterial {
+  id             String      @id @default(uuid())
+  productId      String
+  rawMaterialId  String
+  requiredAmount Int
+  product        Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rawMaterial    RawMaterial @relation(fields: [rawMaterialId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, rawMaterialId])
+}

@@ -1,0 +1,18 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+*.tsbuildinfo
+
+# Variáveis de Ambiente (MUITO IMPORTANTE)
+.env
+
+# Banco de Dados SQLite (se estiver usando para testes locais)
+*.db
+*.db-journal
+
+# Logs e Cache
+npm-debug.log*
+yarn-error.log*
+.eslintcache
