@@ -88,13 +88,10 @@ export async function updateProductService(id: string, data: {
 }) {
   if (!isValidUUID(id)) throw new AppError('ID inválido', 400);
 
-  // 1. Verifica existência
   const exists = await prisma.product.findUnique({ where: { id } });
   if (!exists) throw new AppError('Produto não encontrado', 404);
 
-  // 2. Transação: Garante que ou faz tudo, ou não faz nada
   return prisma.$transaction(async (tx) => {
-    // PASSO A: Atualiza os dados básicos do produto
     await tx.product.update({
       where: { id },
       data: {
@@ -104,14 +101,11 @@ export async function updateProductService(id: string, data: {
       },
     });
 
-    // PASSO B: Se materiais foram enviados, sincroniza
     if (data.materials) {
-      // 1. Deleta TODOS os materiais antigos deste produto
       await tx.productRawMaterial.deleteMany({
         where: { productId: id }
       });
 
-      // 2. Cria os novos enviados (com os requiredAmount atualizados)
       await tx.productRawMaterial.createMany({
         data: data.materials.map(m => ({
           productId: id,
@@ -121,7 +115,6 @@ export async function updateProductService(id: string, data: {
       });
     }
 
-    // Retorna o produto completo para o Frontend atualizar a lista sem "sumir" nada
     return tx.product.findUnique({
       where: { id },
       include: { 
@@ -160,8 +153,6 @@ export async function getProductionSuggestionService() {
   let totalValue = 0;
 
   for (const product of products) {
-    // PROTEÇÃO: Se o produto não tem materiais associados, 
-    // não entramos no loop para evitar o loop infinito (Timeout)
     if (!product.materials || product.materials.length === 0) {
       continue; 
     }
@@ -171,12 +162,9 @@ export async function getProductionSuggestionService() {
     const productPrice = Number(product.price);
 
     while (canProduce) {
-      // 1. Verifica se há estoque para TODOS os materiais do produto
       for (const item of product.materials) {
         const currentStock = inventory.get(item.rawMaterialId) || 0;
         
-        // Proteção extra: se a quantidade necessária for 0 ou negativa, 
-        // paramos para evitar erro de lógica
         if (item.requiredAmount <= 0) {
           canProduce = false;
           break;
@@ -188,7 +176,6 @@ export async function getProductionSuggestionService() {
         }
       }
 
-      // 2. Se passou no teste acima, subtrai do estoque e aumenta o contador
       if (canProduce) {
         for (const item of product.materials) {
           const currentStock = inventory.get(item.rawMaterialId) || 0;

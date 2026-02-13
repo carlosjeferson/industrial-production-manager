@@ -9,6 +9,5 @@ export const store = configureStore({
   },
 });
 
-// Essas exportações de tipo são essenciais para o TypeScript não reclamar
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

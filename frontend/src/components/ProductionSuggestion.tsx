@@ -80,7 +80,6 @@ const ProductionSuggestion: React.FC = () => {
                     <Box size={12} /> Materials to be Consumed
                   </h4>
                   <div className="space-y-2">
-                    {/* Aqui assumimos que o backend envia os materiais dentro do item da sugestão */}
                     {item.materials?.map((mat: any, idx: number) => (
                       <div key={idx} className="flex justify-between items-center text-sm border-b border-slate-200 pb-1">
                         <span className="text-slate-600 font-medium">{mat.name}</span>

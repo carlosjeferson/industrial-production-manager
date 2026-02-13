@@ -1,8 +1,7 @@
-import "dotenv/config"; // 1º lugar: Carrega as variáveis
-import app from "./app.js"; // 2º lugar: Carrega o resto do sistema
+import "dotenv/config";
+import app from "./app.js";
 
 const PORT = process.env.PORT || 3000;
-
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
