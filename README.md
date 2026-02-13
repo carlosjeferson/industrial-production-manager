@@ -22,8 +22,8 @@ Este projeto resolve o desafio de equilibrar o estoque de matérias-primas com a
 
 ### Backend
 - **Node.js** com **Express 5**
-- **Prisma ORM**
-- **PostgreSQL / SQLite**
+- **Database:** PostgreSQL hospedado no **Supabase**.
+- **ORM:** Prisma.
 - **Zod** (Validação de schemas e tipos)
 - **Vitest** (Testes unitários e de integração)
 
